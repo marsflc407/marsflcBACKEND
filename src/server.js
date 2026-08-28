@@ -16,6 +16,7 @@ import applicationRoutes from "./routes/application.js";
 import partnerCompanyRoutes from "./routes/partnerCompany.js";
 import heroSlideRoutes from "./routes/heroSlide.js";
 import contactSettingsRoutes from "./routes/contactSettings.js";
+import contactMessageRoutes from "./routes/contactMessage.js";
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
@@ -40,6 +41,7 @@ app.use("/api/application", applicationRoutes);
 app.use("/api/partner-companies", partnerCompanyRoutes);
 app.use("/api/hero-slides", heroSlideRoutes);
 app.use("/api/contact-settings", contactSettingsRoutes);
+app.use("/api/contact-messages", contactMessageRoutes);
 
 app.get("/api", (req, res) => {
   res.send("API is running");

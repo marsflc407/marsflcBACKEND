@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { COMPANY } from "../config/company.js";
+import ContactMessage from "../models/ContactMessage.js";
 
 const createTransporter = () => {
   return nodemailer.createTransport({
@@ -23,6 +24,8 @@ export const sendMessage = async (req, res) => {
         message: "Name, email, and message are required.",
       });
     }
+
+    await ContactMessage.create({ name, email, phone, message });
 
     const transporter = createTransporter();
 
