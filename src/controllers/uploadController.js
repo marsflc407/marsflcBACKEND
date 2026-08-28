@@ -1,3 +1,4 @@
+import fs from "fs";
 import cloudinary from "../config/cloudinary.js";
 import Image from "../models/Image.js";
 
@@ -35,6 +36,37 @@ export const uploadImage = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+export const uploadCv = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No CV file provided" });
+    }
+
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "mars-flc/cvs",
+      resource_type: "raw",
+      use_filename: true,
+      unique_filename: true,
+    });
+
+    return res.status(201).json({
+      success: true,
+      data: {
+        url: uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+        format: uploadResult.format,
+        originalName: req.file.originalname,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  } finally {
+    if (req.file) fs.unlink(req.file.path, () => {});
   }
 };
 

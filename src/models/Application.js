@@ -25,6 +25,18 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    cvPublicId: {
+      type: String,
+      trim: true,
+    },
+    cvOriginalName: {
+      type: String,
+      trim: true,
+    },
+    cvFormat: {
+      type: String,
+      trim: true,
+    },
     coverLetter: {
       type: String,
       trim: true,

@@ -18,6 +18,22 @@ export const getCareers = async (req, res) => {
   }
 };
 
+export const getAllCareers = async (req, res) => {
+  try {
+    const careers = await Career.find().sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: careers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const createCareer = async (req, res) => {
   try {
     const career = await Career.create(req.body);

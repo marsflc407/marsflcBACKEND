@@ -4,13 +4,15 @@ import {
   uploadMultipleImages,
   deleteImage,
   getImages,
+  uploadCv,
 } from "../controllers/uploadController.js";
 import { protect, admin } from "../middleware/auth.js";
-import upload from "../middleware/upload.js";
+import upload, { uploadCv as uploadCvFile } from "../middleware/upload.js";
 
 const router = express.Router();
 
 router.post("/single", protect, admin, upload.single("image"), uploadImage);
+router.post("/cv", uploadCvFile.single("cv"), uploadCv);
 router.post(
   "/multiple",
   protect,
