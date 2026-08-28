@@ -4,7 +4,18 @@ const contentSchema = new mongoose.Schema(
   {
     page: {
       type: String,
-      enum: ["home", "about", "cpv", "debt-collection", "careers", "contact"],
+      enum: [
+        "home",
+        "about",
+        "management",
+        "family",
+        "sister-concern",
+        "company-overview",
+        "cpv",
+        "debt-collection",
+        "careers",
+        "contact",
+      ],
       required: true,
     },
     section: {
@@ -24,6 +35,9 @@ const contentSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    image: { type: String, trim: true },
+    buttonLabel: { type: String, trim: true },
+    buttonUrl: { type: String, trim: true },
     order: {
       type: Number,
       default: 0,

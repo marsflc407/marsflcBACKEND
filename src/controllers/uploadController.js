@@ -137,6 +137,35 @@ export const deleteImage = async (req, res) => {
   }
 };
 
+export const replaceImage = async (req, res) => {
+  try {
+    const image = await Image.findById(req.params.id);
+    if (!image)
+      return res
+        .status(404)
+        .json({ success: false, message: "Image not found" });
+    if (!req.file)
+      return res
+        .status(400)
+        .json({ success: false, message: "No image file provided" });
+
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "mars-flc",
+    });
+    await cloudinary.uploader.destroy(image.publicId);
+    image.url = uploadResult.secure_url;
+    image.publicId = uploadResult.public_id;
+    image.title = req.body.title ?? image.title;
+    image.alt = req.body.alt ?? image.alt;
+    image.section = req.body.section || image.section;
+    await image.save();
+
+    return res.status(200).json({ success: true, data: image });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const getImages = async (req, res) => {
   try {
     const images = await Image.find({ isActive: true }).sort({ order: 1 });

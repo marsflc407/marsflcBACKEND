@@ -18,7 +18,14 @@ const imageSchema = new mongoose.Schema(
     },
     section: {
       type: String,
-      enum: ["hero", "team", "services", "sister-concern", "other"],
+      enum: [
+        "hero",
+        "team",
+        "company-overview",
+        "services",
+        "sister-concern",
+        "other",
+      ],
       default: "other",
     },
     alt: {

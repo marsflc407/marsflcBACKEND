@@ -5,6 +5,7 @@ import {
   deleteImage,
   getImages,
   uploadCv,
+  replaceImage,
 } from "../controllers/uploadController.js";
 import { protect, admin } from "../middleware/auth.js";
 import upload, { uploadCv as uploadCvFile } from "../middleware/upload.js";
@@ -21,6 +22,7 @@ router.post(
   uploadMultipleImages,
 );
 router.delete("/:id", protect, admin, deleteImage);
+router.put("/:id", protect, admin, upload.single("image"), replaceImage);
 router.get("/", getImages);
 
 export default router;
