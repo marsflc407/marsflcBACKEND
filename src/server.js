@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/auth.js";
@@ -15,7 +17,10 @@ import partnerCompanyRoutes from "./routes/partnerCompany.js";
 import heroSlideRoutes from "./routes/heroSlide.js";
 import contactSettingsRoutes from "./routes/contactSettings.js";
 
-dotenv.config();
+const currentFile = fileURLToPath(import.meta.url);
+const currentDirectory = path.dirname(currentFile);
+
+dotenv.config({ path: path.resolve(currentDirectory, "../.env") });
 connectDB();
 
 const app = express();

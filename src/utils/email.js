@@ -48,7 +48,10 @@ export const sendPasswordResetOtp = async ({ to, otp }) => {
   });
 
   if (!response.ok) {
-    throw new Error(`Resend email failed with status ${response.status}`);
+    const details = await response.text();
+    throw new Error(
+      `Resend email failed with status ${response.status}: ${details}`,
+    );
   }
 };
 
