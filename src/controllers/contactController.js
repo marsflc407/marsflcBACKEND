@@ -47,11 +47,11 @@ export const sendMessage = async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions).catch(() => {});
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: "Your message has been sent successfully.",
+      message: "Your message has been received successfully.",
     });
   } catch (error) {
     return res.status(500).json({
