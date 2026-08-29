@@ -24,7 +24,14 @@ const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
 
 dotenv.config({ path: path.resolve(currentDirectory, "../.env") });
-connectDB();
+
+if (process.env.MONGODB_URI) {
+  connectDB();
+} else {
+  console.warn(
+    "MONGODB_URI is not set. Starting without a database connection.",
+  );
+}
 
 const app = express();
 
@@ -70,6 +77,15 @@ app.use("/api/contact-messages", contactMessageRoutes);
 app.use("/api/footer-settings", footerSettingsRoutes);
 app.use("/api/debt-collection-settings", debtCollectionSettingsRoutes);
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "MARS FLC API is running",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
 app.get("/api", (req, res) => {
   res.send("API is running");
 });
@@ -83,8 +99,17 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Service is healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
