@@ -19,6 +19,15 @@ const careerSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    vacancy: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
+    applicationDeadline: {
+      type: Date,
+      required: true,
+    },
     location: {
       type: String,
       trim: true,

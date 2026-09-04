@@ -20,7 +20,9 @@ export const getCareers = async (req, res) => {
 
 export const getAllCareers = async (req, res) => {
   try {
-    const careers = await Career.find().sort({ createdAt: -1 });
+    const careers = await Career.find({ isActive: true }).sort({
+      createdAt: -1,
+    });
 
     return res.status(200).json({
       success: true,
@@ -36,7 +38,26 @@ export const getAllCareers = async (req, res) => {
 
 export const createCareer = async (req, res) => {
   try {
-    const career = await Career.create(req.body);
+    const {
+      position,
+      department,
+      description,
+      requirements,
+      vacancy,
+      applicationDeadline,
+      location,
+      isActive,
+    } = req.body;
+    const career = await Career.create({
+      position,
+      department,
+      description,
+      requirements,
+      vacancy,
+      applicationDeadline,
+      location,
+      isActive,
+    });
 
     return res.status(201).json({
       success: true,
@@ -52,10 +73,33 @@ export const createCareer = async (req, res) => {
 
 export const updateCareer = async (req, res) => {
   try {
-    const career = await Career.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const {
+      position,
+      department,
+      description,
+      requirements,
+      vacancy,
+      applicationDeadline,
+      location,
+      isActive,
+    } = req.body;
+    const career = await Career.findByIdAndUpdate(
+      req.params.id,
+      {
+        position,
+        department,
+        description,
+        requirements,
+        vacancy,
+        applicationDeadline,
+        location,
+        isActive,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
     return res.status(200).json({
       success: true,

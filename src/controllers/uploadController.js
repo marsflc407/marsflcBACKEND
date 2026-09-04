@@ -13,6 +13,8 @@ export const uploadImage = async (req, res) => {
 
     const section = req.body.section || "other";
     const title = req.body.title || "";
+    const description = req.body.description || "";
+    const category = req.body.category || "gallery";
     const alt = req.body.alt || "";
 
     const uploadResult = await cloudinary.uploader.upload(req.file.path, {
@@ -25,6 +27,8 @@ export const uploadImage = async (req, res) => {
       publicId: uploadResult.public_id,
       section,
       alt,
+      description,
+      category,
     });
 
     return res.status(201).json({
@@ -36,6 +40,8 @@ export const uploadImage = async (req, res) => {
       success: false,
       message: error.message,
     });
+  } finally {
+    if (req.file) fs.unlink(req.file.path, () => {});
   }
 };
 
@@ -157,18 +163,43 @@ export const replaceImage = async (req, res) => {
     image.publicId = uploadResult.public_id;
     image.title = req.body.title ?? image.title;
     image.alt = req.body.alt ?? image.alt;
+    image.description = req.body.description ?? image.description;
+    image.category = req.body.category || image.category;
     image.section = req.body.section || image.section;
     await image.save();
 
     return res.status(200).json({ success: true, data: image });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
+  } finally {
+    if (req.file) fs.unlink(req.file.path, () => {});
   }
 };
 
 export const getImages = async (req, res) => {
   try {
     const images = await Image.find({ isActive: true }).sort({ order: 1 });
+
+    return res.status(200).json({
+      success: true,
+      data: images,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getGalleryImages = async (req, res) => {
+  try {
+    const images = await Image.find({
+      category: "gallery",
+      isActive: true,
+    })
+      .sort({ order: 1 })
+      .limit(20);
 
     return res.status(200).json({
       success: true,
