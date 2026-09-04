@@ -54,11 +54,10 @@ export const getNewsfeedById = async (req, res) => {
 
 export const createNewsfeed = async (req, res) => {
   try {
-    const caption = String(
-      req.body.caption || req.body.content || req.body.title || "",
-    ).trim();
+    const title = String(req.body.title || "").trim();
+    const caption = String(req.body.caption || req.body.content || "").trim();
     const newsfeed = await Newsfeed.create({
-      title: caption,
+      title,
       content: caption,
       image: req.body.image || "",
       imagePublicId: req.body.imagePublicId || "",
@@ -81,20 +80,21 @@ export const createNewsfeed = async (req, res) => {
 
 export const updateNewsfeed = async (req, res) => {
   try {
-    const caption = String(
-      req.body.caption || req.body.content || req.body.title || "",
-    ).trim();
-    const newsfeed = await Newsfeed.findByIdAndUpdate(req.params.id, req.body, {
+    const title = String(req.body.title || "").trim();
+    const caption = String(req.body.caption || req.body.content || "").trim();
+    const updates = {
+      title,
+      content: caption,
+      author: NEWSFEED_AUTHOR,
+    };
+    if (req.body.image !== undefined) updates.image = req.body.image;
+    if (req.body.imagePublicId !== undefined) {
+      updates.imagePublicId = req.body.imagePublicId;
+    }
+    const newsfeed = await Newsfeed.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
     });
-
-    if (newsfeed) {
-      newsfeed.title = caption;
-      newsfeed.content = caption;
-      newsfeed.author = NEWSFEED_AUTHOR;
-      await newsfeed.save();
-    }
 
     return res.status(200).json({
       success: true,
