@@ -38,6 +38,7 @@ const app = express();
 
 const allowedOrigins = [
   "https://marsflc.info",
+  "https://www.marsflc.info",
   "https://marsflc.vercel.app",
   "http://localhost:5173",
   process.env.CLIENT_URLS,
