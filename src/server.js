@@ -37,6 +37,7 @@ if (process.env.MONGODB_URI) {
 const app = express();
 
 const allowedOrigins = [
+  "https://marsflc.info",
   "https://marsflc.vercel.app",
   "http://localhost:5173",
   process.env.CLIENT_URLS,
