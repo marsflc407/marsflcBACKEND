@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const newsfeedSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      enum: ["regular", "external"],
+      default: "regular",
+    },
     title: {
       type: String,
       required: true,
@@ -17,6 +22,14 @@ const newsfeedSchema = new mongoose.Schema(
       trim: true,
     },
     imagePublicId: {
+      type: String,
+      trim: true,
+    },
+    externalUrl: {
+      type: String,
+      trim: true,
+    },
+    sourceName: {
       type: String,
       trim: true,
     },
