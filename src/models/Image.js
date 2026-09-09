@@ -16,6 +16,16 @@ const imageSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    category: {
+      type: String,
+      enum: ["gallery", "hero", "team", "services", "sister-concern", "other"],
+      default: "gallery",
+    },
     section: {
       type: String,
       enum: [

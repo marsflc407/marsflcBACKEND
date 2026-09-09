@@ -4,6 +4,7 @@ import {
   uploadMultipleImages,
   deleteImage,
   getImages,
+  getGalleryImages,
   uploadCv,
   replaceImage,
 } from "../controllers/uploadController.js";
@@ -24,5 +25,6 @@ router.post(
 router.delete("/:id", protect, admin, deleteImage);
 router.put("/:id", protect, admin, upload.single("image"), replaceImage);
 router.get("/", getImages);
+router.get("/gallery", getGalleryImages);
 
 export default router;

@@ -19,6 +19,7 @@ import contactSettingsRoutes from "./routes/contactSettings.js";
 import contactMessageRoutes from "./routes/contactMessage.js";
 import footerSettingsRoutes from "./routes/footerSettings.js";
 import debtCollectionSettingsRoutes from "./routes/debtCollectionSettings.js";
+import newsfeedRoutes from "./routes/newsfeed.js";
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
@@ -76,6 +77,7 @@ app.use("/api/contact-settings", contactSettingsRoutes);
 app.use("/api/contact-messages", contactMessageRoutes);
 app.use("/api/footer-settings", footerSettingsRoutes);
 app.use("/api/debt-collection-settings", debtCollectionSettingsRoutes);
+app.use("/api/newsfeed", newsfeedRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({
