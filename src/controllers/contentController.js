@@ -20,6 +20,23 @@ export const getContentByPage = async (req, res) => {
   }
 };
 
+export const getAllContentByPage = async (req, res) => {
+  try {
+    const { page } = req.params;
+    const content = await Content.find({ page }).sort({ order: 1 });
+
+    return res.status(200).json({
+      success: true,
+      data: content,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const getContentBySection = async (req, res) => {
   try {
     const { page, section } = req.params;

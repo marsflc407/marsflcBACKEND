@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getContentByPage,
+  getAllContentByPage,
   getContentBySection,
   createContent,
   updateContent,
@@ -10,6 +11,7 @@ import { protect, admin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+router.get("/admin/:page", protect, admin, getAllContentByPage);
 router.get("/:page", getContentByPage);
 router.get("/:page/:section", getContentBySection);
 router.post("/", protect, admin, createContent);
