@@ -14,8 +14,15 @@ export const uploadImage = async (req, res) => {
     const section = req.body.section || "other";
     const title = req.body.title || "";
     const description = req.body.description || "";
-    const category = req.body.category || "gallery";
+    const category = req.body.category || "other";
     const alt = req.body.alt || "";
+
+    if (section === "gallery" || category === "gallery") {
+      return res.status(400).json({
+        success: false,
+        message: "Use the dedicated Gallery upload route.",
+      });
+    }
 
     const uploadResult = await cloudinary.uploader.upload(req.file.path, {
       folder: "mars-flc",
@@ -35,6 +42,40 @@ export const uploadImage = async (req, res) => {
       success: true,
       data: image,
     });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  } finally {
+    if (req.file) fs.unlink(req.file.path, () => {});
+  }
+};
+
+export const uploadGalleryImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      });
+    }
+
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "mars-flc/gallery",
+    });
+
+    const image = await Image.create({
+      title: req.body.title || "",
+      url: uploadResult.secure_url,
+      publicId: uploadResult.public_id,
+      section: "gallery",
+      category: "gallery",
+      alt: req.body.alt || "",
+      description: req.body.description || "",
+    });
+
+    return res.status(201).json({ success: true, data: image });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -89,6 +130,13 @@ export const uploadMultipleImages = async (req, res) => {
     const title = req.body.title || "";
     const alt = req.body.alt || "";
 
+    if (section === "gallery" || req.body.category === "gallery") {
+      return res.status(400).json({
+        success: false,
+        message: "Use the dedicated Gallery upload route.",
+      });
+    }
+
     const uploadedImages = await Promise.all(
       req.files.map(async (file) => {
         const uploadResult = await cloudinary.uploader.upload(file.path, {
@@ -101,6 +149,7 @@ export const uploadMultipleImages = async (req, res) => {
           publicId: uploadResult.public_id,
           section,
           alt,
+          category: "other",
         });
       }),
     );
@@ -134,6 +183,33 @@ export const deleteImage = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Image deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteGalleryImages = async (req, res) => {
+  try {
+    const images = await Image.find({
+      category: "gallery",
+      section: "gallery",
+    });
+
+    await Promise.all(
+      images.map((image) => cloudinary.uploader.destroy(image.publicId)),
+    );
+    const result = await Image.deleteMany({
+      category: "gallery",
+      section: "gallery",
+    });
+
+    return res.status(200).json({
+      success: true,
+      deletedCount: result.deletedCount,
     });
   } catch (error) {
     return res.status(500).json({
@@ -192,10 +268,54 @@ export const getImages = async (req, res) => {
   }
 };
 
+export const getAdminImages = async (req, res) => {
+  try {
+    const images = await Image.find({
+      category: "gallery",
+      section: "gallery",
+    }).sort({ order: 1 });
+
+    return res.status(200).json({
+      success: true,
+      data: images,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const updateImageVisibility = async (req, res) => {
+  try {
+    const image = await Image.findOneAndUpdate(
+      { _id: req.params.id, section: "gallery" },
+      { isActive: Boolean(req.body.isActive) },
+      { new: true, runValidators: true },
+    );
+
+    if (!image) {
+      return res.status(404).json({
+        success: false,
+        message: "Gallery image not found",
+      });
+    }
+
+    return res.status(200).json({ success: true, data: image });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const getGalleryImages = async (req, res) => {
   try {
     const images = await Image.find({
       category: "gallery",
+      section: "gallery",
       isActive: true,
     })
       .sort({ order: 1 })

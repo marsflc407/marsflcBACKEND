@@ -37,8 +37,10 @@ const imageSchema = new mongoose.Schema(
     section: {
       type: String,
       enum: [
+        "gallery",
         "hero",
         "team",
+        "management",
         "company-overview",
         "services",
         "sister-concern",
