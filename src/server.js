@@ -112,6 +112,13 @@ app.get("/health", (req, res) => {
   });
 });
 
+
+// Express.js Example
+app.get("/ping", (req, res) => {
+  res.status(200).send("Server is alive!");
+});
+
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, "0.0.0.0", () => {
